@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: my-python-app
-        image: haifaalanesi/my-python-app:v1 # Ensure this matches your Docker Hub image
+        image: haifaalanesi/my-python-app:latest # Ensure this matches your Docker Hub image
         ports:
         - containerPort: 8000
 ---
