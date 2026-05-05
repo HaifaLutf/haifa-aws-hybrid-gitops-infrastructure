@@ -38,4 +38,4 @@ spec:
       volumes:
       - name: ghost-data
         persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          claimName: ghost-content-pvc
