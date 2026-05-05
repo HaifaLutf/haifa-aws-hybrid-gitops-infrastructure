@@ -18,6 +18,8 @@ spec:
       - image: mysql:8.0
         name: mysql
         env:
+        - name: MYSQL_DATABASE
+          value: ghost
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
