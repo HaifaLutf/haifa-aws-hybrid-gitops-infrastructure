@@ -3,3 +3,7 @@ kind: Kustomization
 resources:
   - storage-class.yaml
   - postgres-ss.yaml
+  - cloudflared.yaml
+  - monitoring.yaml
+  - service.yaml
+

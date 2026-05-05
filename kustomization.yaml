@@ -1,16 +1,4 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
-# The resources list follows the order of dependencies for your cluster
 resources:
-  # 1. The GitOps controllers that monitor your GitHub repo
-  - flux-system/
-
-  # 2. Core services: StorageClass, PostgreSQL, and Cloudflare Tunnels
-  - infrastructure/
-
-  # 3. Your Ghost portfolio, MySQL database, and Persistent Volumes
-  - ghost/
-
-  # 4. Your custom Python application
-  - deployment.yaml
+  - clusters/haifa-eks-cluster/
