@@ -4,4 +4,4 @@ resources:
   - flux-system/          # This manages the controllers
   - infrastructure/       # This manages your Postgres and StorageClass
   - deployment.yaml       # This manages your Python app
-  - ghost/
+
