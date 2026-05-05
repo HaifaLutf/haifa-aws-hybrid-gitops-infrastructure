@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-python-app
+spec:
+  selector:
+    app: postgres # This MUST match the labels on your Python Pods
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000 # Or whichever port your FastAPI app listens on
