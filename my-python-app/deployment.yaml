@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: my-python-app
-        image: haifaalanesi/my-python-app:latest
+        image: haifaalanesi/my-python-app:v2
         ports:
         - containerPort: 8000
 ---
