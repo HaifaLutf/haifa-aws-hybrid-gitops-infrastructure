@@ -1,0 +1,42 @@
+---
+- name: Prepare EKS Nodes for Stateful Workloads
+  hosts: eks_nodes
+  become: true
+  vars:
+    ebs_csi_driver_version: "v1.25.0"
+    storage_path: "/mnt/data/postgres"
+
+  tasks:
+    - name: Ensure required dependencies are installed
+      apt:
+        name:
+          - unzip
+          - curl
+          - python3-pip
+        state: present
+        update_cache: yes
+
+    - name: Install Boto3 for AWS interaction
+      pip:
+        name: boto3
+        state: present
+
+    - name: Create local storage directory for Homelab persistence
+      file:
+        path: "{{ storage_path }}"
+        state: directory
+        owner: 1000  # Default Postgres User ID
+        group: 1000
+        mode: '0755'
+
+    - name: Verify AWS CLI is installed (required for CSI driver)
+      command: aws --version
+      register: aws_cli_check
+      ignore_errors: yes
+
+    - name: Deploy EBS CSI Driver to the cluster
+      shell: |
+        kubectl kustomize \
+        "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-{{ ebs_csi_driver_version }}" \
+        | kubectl apply -f -
+      when: "'aws' in group_names"

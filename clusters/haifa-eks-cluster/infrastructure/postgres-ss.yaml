@@ -1,0 +1,57 @@
+---
+# 1. Headless Service for Stable Network Identity
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-db
+  labels:
+    app: postgres
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  clusterIP: None  # Required for StatefulSets to give pods direct DNS names
+  selector:
+    app: postgres
+
+---
+# 2. The StatefulSet for PostgreSQL 16
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  serviceName: "postgres-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16  # Using the specific version from your homelab
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "mypassword" # Note: In production, use a K8s Secret!
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+  # 3. Automated Storage Provisioning
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "gp2" # Standard AWS EBS storage class
+      resources:
+        requests:
+          storage: 10Gi
