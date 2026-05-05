@@ -1,0 +1,18 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp2
+provisioner: ebs.csi.aws.com
+parameters:
+   type: gp2
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+    ```
+2.  **Apply it**: `kubectl apply -f clusters/haifa-eks-cluster/infrastructure/storage-class.yaml`
+
+---
+
+### **Why "local-path" is actually great for your lab**
+As an experienced cook, you know that the right tool depends on the kitchen. Using `local-path` is often more reliable in a **Homelab** setup because it doesn't require complex AWS IAM permissions to create external disks—it just uses the storage already on your machine.
+
+**Which path do you prefer? If we go with "local-path," I can help you update your FastAPI connection string next.**

@@ -16,6 +16,11 @@ spec:
       containers:
       - name: my-python-app
         image: haifaalanesi/my-python-app:v2
+        env:
+        - name: DB_HOST
+          value: "postgres-0.postgres-db"
+        - name: DB_PASS
+          value: "mypassword"
         ports:
         - containerPort: 8000
 ---
