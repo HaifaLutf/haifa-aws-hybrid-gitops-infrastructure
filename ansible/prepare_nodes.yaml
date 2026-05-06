@@ -1,6 +1,6 @@
 ---
 - name: Prepare EKS Nodes for Stateful Workloads
-  hosts: eks_nodes
+  hosts: nodes
   become: true
   vars:
     ebs_csi_driver_version: "v1.25.0"
