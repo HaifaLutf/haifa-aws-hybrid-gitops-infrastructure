@@ -1,17 +1,1 @@
-🚀 Hybrid-Cloud GitOps: EKS Infrastructure & ObservabilityThis repository contains a production-ready, highly secure AWS EKS environment managed through Infrastructure as Code (Terraform) and GitOps (Flux CD). The architecture features a Zero Trust ingress strategy using Cloudflare Tunnels, bypassing the need for public-facing load balancers.🔗 Live EndpointsApplication: app.haifa.workMonitoring: grafana.haifa.work🏗️ Architecture OverviewThis project demonstrates a full-lifecycle DevOps workflow:Provisioning: AWS VPC and EKS cluster managed via Terraform.Configuration: Worker nodes prepped using Ansible for baseline dependencies.Synchronization: Flux CD bootstraps the cluster and ensures the live state matches the configuration in the clusters/ directory.Ingress: Cloudflare Tunnels provide secure, encrypted tunnels from the EKS pods directly to the Cloudflare Edge.🛠️ Tech StackCategoryToolsCloudAWS (EKS, VPC, IAM, EBS)IaCTerraform, AnsibleGitOpsFlux CDObservabilityPrometheus, GrafanaSecurityCloudflare Zero Trust (Tunnels)BackendPython (Flask), PostgreSQL📂 Project StructurePlaintext├── ansible/                # Node preparation playbooks
-├── clusters/
-│   └── haifa-eks-cluster/
-│       ├── flux-system/    # Flux CD components
-│       └── infrastructure/ # K8s manifests (Cloudflared, Monitoring, Postgres)
-├── my-python-app/          # Flask application & Dockerfile
-├── eks.tf                  # EKS Cluster definition
-├── vpc.tf                  # Network topology
-└── provider.tf             # AWS & Terraform config
-🌟 Key Features & Engineering Challenges1. Zero Trust Ingress (Cloudflare Tunnels)Instead of deploying an AWS Application Load Balancer (ALB) and opening ports 80/443 to the world, I utilized cloudflared.The Problem: Traditional ingress exposes the cluster to public port scanning and increases AWS costs (~$25/mo for ALB).The Solution: Deployed a cloudflared agent in the cluster that initiates an outbound connection.Result: Created a secure tunnel for app.haifa.work and grafana.haifa.work with zero open inbound security group rules.2. Solving the "Database Locked" Persistence CrisisDuring the initial deployment of the Prometheus/Grafana stack, the Grafana pod entered a CrashLoopBackOff due to an sqlite3.OperationalError: database is locked.Deep Dive: Identified that a previous pod termination left a stale lock file on the EBS-backed Persistent Volume.Resolution: Managed the PVC lifecycle by scaling the deployment to zero, identifying the stale lock via container logs, and force-refreshing the volume mount.Outcome: Restored monitoring availability and implemented proper Readiness Probes to prevent database corruption during future deployments.3. GitOps Automation with FluxThe cluster is fully self-healing. By utilizing the clusters/haifa-eks-cluster/infrastructure/ directory, any change pushed to GitHub is automatically reconciled by Flux. This ensures zero configuration drift.🚀 Getting StartedPrerequisitesAWS CLI & Terraform installed.A Cloudflare account with a Zero Trust Tunnel token.DeploymentInfrastructure:Bashterraform init
-terraform apply
-GitOps Bootstrap:Bashflux bootstrap github \
-  --owner=$GITHUB_USER \
-  --repository=terraform-eks \
-  --path=clusters/haifa-eks-cluster
-Monitoring:Check the status of the monitoring stack:Bashkubectl get pods -n monitoring
-📈 Monitoring & PerformanceCluster Metrics: Tracked via Prometheus and visualized in Grafana.Resource Management: Implemented CPU/Memory limits to ensure cluster stability and cost efficiency.
+
